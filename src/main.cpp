@@ -8,33 +8,24 @@ const char* password = "Cl4r0@6777C0"; // Contraseña de tu red Wi-Fi
 ESP8266WebServer server(80);
 
 void handleRoot() {
-  // Abre el archivo "pagina.html" desde LittleFS
-  if (LittleFS.exists("pagrrrina.html")) {
-        Serial.println("El archivo 'pagina.html' si exis");
-        return;
-    }
-    else{
-      Serial.println("archivo no exxxxx");
-    }
-    
-  File file = LittleFS.open ("pagina.html", "r");
-  if (file) {
-    // Envía el contenido del archivo al cliente
-    server.streamFile(file, "text/html");
-    file.close();
-  } else {
-    // Si no se puede abrir el archivo, enviar un error 404
-    server.send(404, "text/plain", "Archivo no encontrado");
-  }
-  file = LittleFS.open("estilo.css", "r");
 
-    if (file) {
-        // Envía el contenido del archivo CSS al cliente con el tipo MIME adecuado
-        server.streamFile(file, "text/css");
-        file.close();
+     if (LittleFS.exists("pagina.html")) {
+        File file = LittleFS.open("pagina.html", "r");
+        if (file) {
+            // Envía el contenido del archivo al cliente
+            server.streamFile(file, "text/html");
+            file.close();
+        } else {
+            Serial.println("Error al abrir el archivo 'pagina.html'");
+            server.send(500, "text/plain", "Error interno del servidor");
+        }
+    } else {
+        Serial.println("El archivo 'pagina.html' no existe");
+        server.send(404, "text/plain", "Archivo no encontrado");
     }
+
+   
 }
-
 
 void handleRegistrar() {
   // Obtener el documento enviado desde el formulario
